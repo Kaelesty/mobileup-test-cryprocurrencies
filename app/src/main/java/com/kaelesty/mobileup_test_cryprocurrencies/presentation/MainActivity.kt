@@ -1,4 +1,4 @@
-package com.kaelesty.mobileup_test_cryprocurrencies
+package com.kaelesty.mobileup_test_cryprocurrencies.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
