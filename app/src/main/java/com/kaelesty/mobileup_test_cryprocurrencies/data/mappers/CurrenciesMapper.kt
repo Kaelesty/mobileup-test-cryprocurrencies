@@ -5,8 +5,9 @@ import com.kaelesty.mobileup_test_cryprocurrencies.data.responses.CurrencyRespon
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.Currency
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.CurrencyInfo
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.PriceType
+import javax.inject.Inject
 
-object CurrenciesMapper {
+class CurrenciesMapper @Inject constructor() {
 
 	fun mapCurrency_ResponseToDomain(response: CurrencyResponse, priceType: PriceType) = Currency(
 		apiId = response.id,

@@ -1,6 +1,7 @@
 plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.jetbrains.kotlin.android)
+	alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
@@ -66,4 +67,23 @@ dependencies {
 	androidTestImplementation(libs.androidx.ui.test.junit4)
 	debugImplementation(libs.androidx.ui.tooling)
 	debugImplementation(libs.androidx.ui.test.manifest)
+
+	implementation(libs.dagger)
+	ksp(libs.dagger.compiler)
+
+	implementation(libs.ktor.client.core)
+	implementation(libs.ktor.client.cio)
+	implementation(libs.ktor.client.android)
+
+	implementation(libs.mvikotlin.main)
+	implementation(libs.mvikotlin.core)
+	implementation(libs.mvikotlin.coroutines)
+
+	implementation(libs.decompose.core)
+	implementation(libs.decompose.jetpack)
+	implementation(libs.decompose.extensions)
+
+	implementation(libs.kotlinx.serialization)
+	implementation(libs.glide)
+	implementation(libs.glide.compose)
 }
