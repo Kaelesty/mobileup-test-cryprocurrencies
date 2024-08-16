@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">mobileup-test-cryprocurrencies</string>
+    <string name="list_of_cryptocurrencies">Список криптовалют</string>
+    <string name="cryptocurrency_logo">Лого криптовалюты</string>
+    <string name="something_went_wrong">Произошла какая-то ошибка :(</string>
+    <string name="retry">Попробуем снова?</string>
+    <string name="RETRY">ПОПРОБОВАТЬ</string>
+    <string name="description">Описание</string>
 </resources>
