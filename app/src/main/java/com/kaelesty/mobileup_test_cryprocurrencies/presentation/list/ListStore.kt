@@ -72,6 +72,8 @@ class ListStoreFactory @Inject constructor(
         ) {}
 
     sealed interface Action {
+
+		object LoadList: Action
     }
 
     private sealed interface Msg {
@@ -79,6 +81,8 @@ class ListStoreFactory @Inject constructor(
 		class SetNewCurrenciesList(val list: List<Currency>): Msg
 
 		object SetError: Msg
+
+		object SetLoading: Msg
 
 		class SetPriceType(val priceType: PriceType): Msg
     }
@@ -105,9 +109,13 @@ class ListStoreFactory @Inject constructor(
         }
 
         override fun executeAction(action: Action, getState: () -> State) {
+			when (action) {
+				Action.LoadList -> reloadCurrenciesList(getState().priceType)
+			}
         }
 
 		private fun reloadCurrenciesList(priceType: PriceType) {
+			dispatch(Msg.SetLoading)
 			try {
 				scope.launch {
 					val newCurrenciesList = getCurrenciesListUseCase(priceType)
@@ -126,6 +134,7 @@ class ListStoreFactory @Inject constructor(
 				is Msg.SetError -> State.Error(priceType)
 				is Msg.SetNewCurrenciesList -> State.Default(priceType, message.list)
 				is Msg.SetPriceType -> State.Loading(message.priceType)
+				is Msg.SetLoading -> State.Loading(priceType)
 			}
     }
 }

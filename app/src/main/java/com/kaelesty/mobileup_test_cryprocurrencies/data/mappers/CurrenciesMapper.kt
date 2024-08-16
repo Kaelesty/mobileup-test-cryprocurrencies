@@ -10,13 +10,17 @@ import javax.inject.Inject
 class CurrenciesMapper @Inject constructor() {
 
 	fun mapCurrency_ResponseToDomain(response: CurrencyResponse, priceType: PriceType) = Currency(
-		apiId = response.id,
-		shortName = response.symbol,
-		imageUrl = response.image,
-		name = response.name,
-		price = response.current_price.toFloat(),
-		changePercentage = response.price_change_percentage_24h,
-		priceType = priceType
+		meta = Currency.Meta(
+			apiId = response.id,
+			shortName = response.symbol,
+			imageUrl = response.image,
+			name = response.name,
+		),
+		pricing = Currency.Pricing(
+			price = response.current_price.toFloat(),
+			changePercentage = response.price_change_percentage_24h,
+			priceType = priceType
+		)
 	)
 
 	fun mapCurrencyInfo_ResponseToDomain(response: CurrencyInfoResponse) = CurrencyInfo(
