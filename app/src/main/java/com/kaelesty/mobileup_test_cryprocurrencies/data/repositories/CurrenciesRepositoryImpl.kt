@@ -15,12 +15,12 @@ class CurrenciesRepositoryImpl @Inject constructor(
 	override suspend fun getCurrenciesList(priceType: PriceType, count: Int): List<Currency>
 		= apiService.getCurrenciesList(priceType, count)
 			.map { currencyResponse ->
-				currenciesMapper.mapCurrency_ResponseToDomain(currencyResponse, priceType)
+				currenciesMapper.mapCurrencyResponseToDomain(currencyResponse, priceType)
 			}
 
 
 	override suspend fun getCurrencyInfo(id: String) = apiService.getCurrencyInfo(id).let {
-		currenciesMapper.mapCurrencyInfo_ResponseToDomain(it)
+		currenciesMapper.mapCurrencyInfoResponseToDomain(it)
 	}
 
 }

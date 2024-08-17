@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class CurrenciesMapper @Inject constructor() {
 
-	fun mapCurrency_ResponseToDomain(response: CurrencyResponse, priceType: PriceType) = Currency(
+	fun mapCurrencyResponseToDomain(response: CurrencyResponse, priceType: PriceType) = Currency(
 		meta = Currency.Meta(
 			apiId = response.id,
 			shortName = response.symbol,
@@ -23,7 +23,7 @@ class CurrenciesMapper @Inject constructor() {
 		)
 	)
 
-	fun mapCurrencyInfo_ResponseToDomain(response: CurrencyInfoResponse) = CurrencyInfo(
+	fun mapCurrencyInfoResponseToDomain(response: CurrencyInfoResponse) = CurrencyInfo(
 		description = response.description.en,
 		categories = response.categories
 	)

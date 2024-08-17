@@ -11,20 +11,22 @@ import com.kaelesty.mobileup_test_cryprocurrencies.domain.usecases.GetCurrencyIn
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.info.InfoStore.Intent
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.info.InfoStore.Label
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.info.InfoStore.State
-import com.kaelesty.mobileup_test_cryprocurrencies.presentation.list.ListStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 interface InfoStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
 
-        object ReloadOnError: Intent
+        data object ReloadOnError: Intent
 
-        object NavigateBack: Intent
+        data object NavigateBack: Intent
+
+        class OpenURL(val url: String): Intent
     }
 
     sealed class State(
@@ -41,13 +43,14 @@ interface InfoStore : Store<Intent, State, Label> {
 
     sealed interface Label {
 
-        object NavigateBack: Label
+        data object NavigateBack: Label
     }
 }
 
 class InfoStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val getCurrencyInfoUseCase: GetCurrencyInfoUseCase,
+    @Named("onOpenUrl") private val onOpenUrl: (String) -> Unit,
 ) {
 
     private val scope = CoroutineScope(
@@ -68,16 +71,16 @@ class InfoStoreFactory @Inject constructor(
 
     private sealed interface Action {
 
-        object LoadInfo: Action
+        data object LoadInfo: Action
     }
 
     private sealed interface Msg {
 
         class SetInfo(val currencyInfo: CurrencyInfo): Msg
 
-        object SetError: Msg
+        data object SetError: Msg
 
-        object SetLoading: Msg
+        data object SetLoading: Msg
     }
 
     private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
@@ -94,6 +97,9 @@ class InfoStoreFactory @Inject constructor(
                 }
                 is Intent.ReloadOnError -> {
                     reloadInfo(getState().meta.apiId)
+                }
+                is Intent.OpenURL -> {
+                    onOpenUrl(intent.url)
                 }
             }
         }

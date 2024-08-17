@@ -60,7 +60,7 @@ class DefaultRootComponent @Inject constructor(
 	private sealed interface Config {
 
 		@Serializable
-		object List: Config
+		data object List: Config
 
 		@Serializable
 		class Info(val currencyMeta: Currency.Meta): Config

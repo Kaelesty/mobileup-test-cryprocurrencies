@@ -91,4 +91,6 @@ dependencies {
 
 	implementation(libs.material3)
 	implementation(libs.styleabletoast)
+
+	implementation(libs.material3.html.text)
 }

@@ -15,7 +15,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class DefaultInfoComponent @AssistedInject constructor(
 	@Assisted componentContext: ComponentContext,
@@ -51,6 +50,10 @@ class DefaultInfoComponent @AssistedInject constructor(
 
 	override fun reloadOnError() {
 		store.accept(InfoStore.Intent.ReloadOnError)
+	}
+
+	override fun openURL(url: String) {
+		store.accept(InfoStore.Intent.OpenURL(url))
 	}
 
 	@AssistedFactory

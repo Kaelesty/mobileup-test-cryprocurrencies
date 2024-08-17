@@ -1,7 +1,6 @@
 package com.kaelesty.mobileup_test_cryprocurrencies.presentation.list
 
 import android.content.Context
-import android.widget.Toast
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
@@ -19,7 +18,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import javax.inject.Named
 
 class DefaultListComponent @AssistedInject constructor(

@@ -1,6 +1,5 @@
 package com.kaelesty.mobileup_test_cryprocurrencies.presentation.list
 
-import android.util.Log
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -12,7 +11,6 @@ import com.kaelesty.mobileup_test_cryprocurrencies.domain.usecases.GetCurrencies
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.list.ListStore.Intent
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.list.ListStore.Label
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.list.ListStore.State
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -25,11 +23,11 @@ interface ListStore : Store<Intent, State, Label> {
 
 		class SwitchPriceType(val priceType: PriceType): Intent
 
-		object Reload: Intent
+		data object Reload: Intent
 
 		class SelectCurrency(val currencyMeta: Currency.Meta): Intent
 
-		object Refresh: Intent
+		data object Refresh: Intent
     }
 
     sealed class State(
@@ -51,7 +49,7 @@ interface ListStore : Store<Intent, State, Label> {
 
 		class NavigateToInfoScreen(val currencyMeta: Currency.Meta): Label
 
-		object RefreshingError: Label
+		data object RefreshingError: Label
     }
 }
 
@@ -78,16 +76,16 @@ class ListStoreFactory @Inject constructor(
 
     sealed interface Action {
 
-		object LoadList: Action
+		data object LoadList: Action
     }
 
     private sealed interface Msg {
 
 		class SetNewCurrenciesList(val list: List<Currency>): Msg
 
-		object SetError: Msg
+		data object SetError: Msg
 
-		object SetLoading: Msg
+		data object SetLoading: Msg
 
 		class SetRefreshing(val value: Boolean): Msg
 

@@ -1,8 +1,5 @@
 package com.kaelesty.mobileup_test_cryprocurrencies.presentation.info
 
-import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.Currency
-import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.PriceType
-import com.kaelesty.mobileup_test_cryprocurrencies.presentation.list.ListStore
 import kotlinx.coroutines.flow.StateFlow
 
 interface InfoComponent {
@@ -12,4 +9,6 @@ interface InfoComponent {
 	fun navigateBack()
 
 	fun reloadOnError()
+
+	fun openURL(url: String)
 }
