@@ -1,9 +1,11 @@
 package com.kaelesty.mobileup_test_cryprocurrencies.di
 
+import android.content.Context
 import com.arkivanov.decompose.ComponentContext
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.MainActivity
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Named
 
 @Component(
 	modules = [
@@ -21,7 +23,9 @@ interface ApplicationComponent {
 	interface ApplicationComponentFactory {
 
 		fun create(
-			@BindsInstance componentContext: ComponentContext
+			@BindsInstance componentContext: ComponentContext,
+			@BindsInstance activityContext: Context,
+			@BindsInstance @Named("onToast") onToast: (String) -> Unit
 		): ApplicationComponent
 	}
 }

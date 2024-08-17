@@ -10,7 +10,9 @@ interface ListComponent {
 
 	fun onSwitchPriceType(priceType: PriceType)
 
-	fun onReload() // retry on error screen or pull to refresh
+	fun onReload() // retry on error screen
 
 	fun onCurrencyClick(currency: Currency)
+
+	fun onPullToRefresh()
 }

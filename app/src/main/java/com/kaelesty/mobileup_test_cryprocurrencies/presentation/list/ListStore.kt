@@ -28,6 +28,8 @@ interface ListStore : Store<Intent, State, Label> {
 		object Reload: Intent
 
 		class SelectCurrency(val currencyMeta: Currency.Meta): Intent
+
+		object Refresh: Intent
     }
 
     sealed class State(
@@ -40,13 +42,16 @@ interface ListStore : Store<Intent, State, Label> {
 
 		class Default(
 			priceType: PriceType,
-			val currencies: List<Currency>
+			val currencies: List<Currency>,
+			val isRefreshing: Boolean = false
 		): State(priceType)
 	}
 
     sealed interface Label {
 
 		class NavigateToInfoScreen(val currencyMeta: Currency.Meta): Label
+
+		object RefreshingError: Label
     }
 }
 
@@ -84,6 +89,8 @@ class ListStoreFactory @Inject constructor(
 
 		object SetLoading: Msg
 
+		class SetRefreshing(val value: Boolean): Msg
+
 		class SetPriceType(val priceType: PriceType): Msg
     }
 
@@ -96,6 +103,21 @@ class ListStoreFactory @Inject constructor(
     private inner class ExecutorImpl : CoroutineExecutor<Intent, Action, State, Msg, Label>() {
         override fun executeIntent(intent: Intent, getState: () -> State) {
 			when (intent) {
+				is Intent.Refresh -> {
+					dispatch(Msg.SetRefreshing(true))
+					reloadCurrenciesList(
+						priceType = getState().priceType,
+						onException = {
+							dispatch(Msg.SetRefreshing(false))
+							publish(Label.RefreshingError)
+						},
+						onFinish = {
+							dispatch(Msg.SetRefreshing(false))
+						},
+						setLoading = false
+					)
+				}
+
 				is Intent.Reload -> {
 					reloadCurrenciesList(getState().priceType)
 				}
@@ -115,15 +137,23 @@ class ListStoreFactory @Inject constructor(
 			}
         }
 
-		private fun reloadCurrenciesList(priceType: PriceType) {
-			dispatch(Msg.SetLoading)
+		private fun reloadCurrenciesList(
+			priceType: PriceType,
+			onException: () -> Unit = { dispatch(Msg.SetError) },
+			onFinish: (() -> Unit)? = null,
+			setLoading: Boolean = true
+		) {
+			if (setLoading) dispatch(Msg.SetLoading)
 			scope.launch {
 				try {
 					val newCurrenciesList = getCurrenciesListUseCase(priceType)
 					dispatch(Msg.SetNewCurrenciesList(newCurrenciesList))
+					onFinish?.let {
+						it()
+					}
 				}
 				catch (e: Exception) {
-					dispatch(Msg.SetError)
+					onException()
 				}
 			}
 		}
@@ -136,6 +166,16 @@ class ListStoreFactory @Inject constructor(
 				is Msg.SetNewCurrenciesList -> State.Default(priceType, message.list)
 				is Msg.SetPriceType -> State.Loading(message.priceType)
 				is Msg.SetLoading -> State.Loading(priceType)
+				is Msg.SetRefreshing -> {
+					if (this is State.Default) {
+						State.Default(
+							this.priceType,
+							this.currencies,
+							message.value
+						)
+					}
+					else this
+				}
 			}
     }
 }

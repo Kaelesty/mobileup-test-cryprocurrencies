@@ -1,10 +1,13 @@
 package com.kaelesty.mobileup_test_cryprocurrencies.presentation.list
 
+import android.content.Context
+import android.widget.Toast
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import com.kaelesty.mobileup_test_cryprocurrencies.R
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.Currency
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.PriceType
 import dagger.assisted.Assisted
@@ -17,10 +20,13 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 class DefaultListComponent @AssistedInject constructor(
 	@Assisted componentContext: ComponentContext,
 	@Assisted private val onNavigateToInfoScreen: (Currency.Meta) -> Unit,
+	@Named("onToast") private val onToast: (String) -> Unit,
+	private val context: Context,
 	private val storeFactory: ListStoreFactory,
 ): ListComponent, ComponentContext by componentContext {
 
@@ -36,6 +42,9 @@ class DefaultListComponent @AssistedInject constructor(
 					is ListStore.Label.NavigateToInfoScreen -> {
 						onNavigateToInfoScreen(label.currencyMeta)
 					}
+					is ListStore.Label.RefreshingError -> {
+						onToast(context.getString(R.string.error_on_refresh))
+					}
 				}
 			}
 		}
@@ -46,6 +55,12 @@ class DefaultListComponent @AssistedInject constructor(
 	@OptIn(ExperimentalCoroutinesApi::class)
 	override val model: StateFlow<ListStore.State>
 		get() = store.stateFlow
+
+	override fun onPullToRefresh() {
+		store.accept(
+			ListStore.Intent.Refresh
+		)
+	}
 
 	override fun onSwitchPriceType(priceType: PriceType) {
 		store.accept(

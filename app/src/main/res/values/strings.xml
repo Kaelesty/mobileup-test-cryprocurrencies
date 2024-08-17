@@ -9,4 +9,5 @@
     <string name="btc_logo">Лого Биткоин</string>
     <string name="categories">Категории</string>
     <string name="back_button">Back button</string>
+    <string name="error_on_refresh">Произошла ошибка при загрузке</string>
 </resources>

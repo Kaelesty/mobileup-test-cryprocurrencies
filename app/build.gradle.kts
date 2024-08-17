@@ -88,4 +88,7 @@ dependencies {
 	implementation(libs.glide.compose)
 
 	implementation(libs.kotlinx.serialization.json)
+
+	implementation(libs.material3)
+	implementation(libs.styleabletoast)
 }
