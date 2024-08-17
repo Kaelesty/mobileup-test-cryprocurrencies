@@ -6,4 +6,7 @@
     <string name="retry">Попробуем снова?</string>
     <string name="RETRY">ПОПРОБОВАТЬ</string>
     <string name="description">Описание</string>
+    <string name="btc_logo">Лого Биткоин</string>
+    <string name="categories">Категории</string>
+    <string name="back_button">Back button</string>
 </resources>

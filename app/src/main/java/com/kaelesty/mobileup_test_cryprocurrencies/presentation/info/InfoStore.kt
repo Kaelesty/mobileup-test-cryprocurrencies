@@ -108,14 +108,14 @@ class InfoStoreFactory @Inject constructor(
 
         private fun reloadInfo(currencyApiId: String) {
             dispatch(Msg.SetLoading)
-            try {
-                scope.launch {
+            scope.launch {
+                try {
                     val currencyInfo = getCurrencyInfoUseCase(currencyApiId)
                     dispatch(Msg.SetInfo(currencyInfo))
                 }
-            }
-            catch (e: Exception) {
-                dispatch(Msg.SetError)
+                catch (e: Exception) {
+                    dispatch(Msg.SetError)
+                }
             }
         }
     }

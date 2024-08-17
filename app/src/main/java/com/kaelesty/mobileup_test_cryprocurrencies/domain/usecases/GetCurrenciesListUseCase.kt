@@ -8,5 +8,8 @@ class GetCurrenciesListUseCase @Inject constructor(
 	private val repository: CurrenciesRepository
 ) {
 
-	suspend operator fun invoke(priceType: PriceType) = repository.getCurrenciesList(priceType)
+	suspend operator fun invoke(
+		priceType: PriceType,
+		count: Int = 30
+	) = repository.getCurrenciesList(priceType, count)
 }

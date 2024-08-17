@@ -6,7 +6,7 @@ import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.PriceType
 
 interface CurrenciesRepository {
 
-	suspend fun getCurrenciesList(priceType: PriceType): List<Currency>
+	suspend fun getCurrenciesList(priceType: PriceType, count: Int): List<Currency>
 
 	suspend fun getCurrencyInfo(id: String): CurrencyInfo
 }

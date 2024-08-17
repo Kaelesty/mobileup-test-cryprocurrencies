@@ -17,7 +17,7 @@ class CurrenciesMapper @Inject constructor() {
 			name = response.name,
 		),
 		pricing = Currency.Pricing(
-			price = response.current_price.toFloat(),
+			price = response.current_price,
 			changePercentage = response.price_change_percentage_24h,
 			priceType = priceType
 		)

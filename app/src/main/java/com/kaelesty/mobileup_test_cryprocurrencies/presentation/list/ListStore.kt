@@ -89,6 +89,7 @@ class ListStoreFactory @Inject constructor(
 
     private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
         override fun invoke() {
+			dispatch(Action.LoadList)
         }
     }
 
@@ -116,14 +117,14 @@ class ListStoreFactory @Inject constructor(
 
 		private fun reloadCurrenciesList(priceType: PriceType) {
 			dispatch(Msg.SetLoading)
-			try {
-				scope.launch {
+			scope.launch {
+				try {
 					val newCurrenciesList = getCurrenciesListUseCase(priceType)
 					dispatch(Msg.SetNewCurrenciesList(newCurrenciesList))
 				}
-			}
-			catch (e: Exception) {
-				dispatch(Msg.SetError)
+				catch (e: Exception) {
+					dispatch(Msg.SetError)
+				}
 			}
 		}
     }

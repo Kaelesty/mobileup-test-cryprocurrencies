@@ -5,5 +5,5 @@ enum class PriceType (
 	val symbol: Char // $
 ){
 	USD("usd", '$'),
-	RUB("rub", 'P') // TODO set correct symbol
+	RUB("rub", '₽')
 }

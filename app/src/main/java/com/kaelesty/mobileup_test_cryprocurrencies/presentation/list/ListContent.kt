@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -17,7 +21,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableChipColors
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -35,8 +42,13 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.kaelesty.mobileup_test_cryprocurrencies.R
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.Currency
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.PriceType
+import com.kaelesty.mobileup_test_cryprocurrencies.presentation.asChangePercentage
+import com.kaelesty.mobileup_test_cryprocurrencies.presentation.asPrice
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.root.ErrorScreen
 import com.kaelesty.mobileup_test_cryprocurrencies.presentation.root.LoadingScreen
+import com.kaelesty.mobileup_test_cryprocurrencies.presentation.root.TopBar
+import com.kaelesty.mobileup_test_cryprocurrencies.presentation.theme.OrangeChipBackground
+import com.kaelesty.mobileup_test_cryprocurrencies.presentation.theme.OrangeChipText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,20 +60,16 @@ fun ListContent(
 
 	Scaffold(
 		topBar = {
-			TopAppBar(title = {
-				Column(
-					modifier = Modifier
-						.padding(4.dp)
-				) {
-					Text(
-						text = stringResource(R.string.list_of_cryptocurrencies),
-						fontWeight = FontWeight.Bold,
-						fontSize = 24.sp
-					)
-					Spacer(modifier = Modifier.height(8.dp))
-					PriceTypesList(state, component)
-				}
-			})
+			TopBar {
+				Spacer(modifier = Modifier.height(8.dp))
+				Text(
+					text = stringResource(R.string.list_of_cryptocurrencies),
+					fontWeight = FontWeight.SemiBold,
+					fontSize = 24.sp
+				)
+				Spacer(modifier = Modifier.height(8.dp))
+				PriceTypesList(state, component)
+			}
 		}
 	) {
 		Box(modifier = Modifier.padding(it)) {
@@ -69,11 +77,13 @@ fun ListContent(
 				is ListStore.State.Default -> {
 					ListScreenDefault(currentState, component)
 				}
+
 				is ListStore.State.Error -> {
 					ErrorScreen {
 						component.onReload()
 					}
 				}
+
 				is ListStore.State.Loading -> {
 					LoadingScreen()
 				}
@@ -82,45 +92,17 @@ fun ListContent(
 	}
 }
 
-@Composable
-private fun ListScreenError(component: ListComponent) {
-	Column(
-		modifier = Modifier
-			.fillMaxSize(),
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		Spacer(modifier = Modifier.height(200.dp))
-		// TODO insert Bitcoin image
-		Text(
-			text = stringResource(R.string.something_went_wrong),
-			fontSize = 16.sp
-		)
-		Text(
-			text = stringResource(R.string.retry),
-			fontSize = 16.sp
-		)
-		Spacer(modifier = Modifier.height(8.dp))
-		with(ButtonDefaults.buttonColors()) {
-			Button(
-				onClick = { component.onReload() },
-				colors = ButtonColors(
-					containerColor = Color.Yellow, // TODO change to orange
-					contentColor, disabledContainerColor, disabledContentColor
-				)
-			) {
-				Text(text = stringResource(R.string.RETRY))
-			}
-		}
-
-	}
-}
 
 @Composable
 private fun ListScreenDefault(
 	currentState: ListStore.State.Default,
 	component: ListComponent
 ) {
-	LazyColumn {
+	LazyColumn(
+		modifier = Modifier
+			.padding(top = 4.dp)
+			.padding(horizontal = 8.dp)
+	) {
 		items(currentState.currencies, key = { it.meta.apiId }) {
 			CurrencyBlock(component, it)
 		}
@@ -136,12 +118,15 @@ private fun CurrencyBlock(
 	Row(
 		modifier = Modifier.clickable {
 			component.onCurrencyClick(it)
-		}
+		},
+		verticalAlignment = Alignment.CenterVertically
 	) {
 		GlideImage(
 			model = it.meta.imageUrl,
 			contentDescription = stringResource(R.string.cryptocurrency_logo),
-			Modifier.size(60.dp),
+			modifier = Modifier
+				.padding(4.dp)
+				.size(60.dp),
 		)
 		Column(
 			Modifier.weight(1f)
@@ -149,23 +134,25 @@ private fun CurrencyBlock(
 			Text(
 				text = it.meta.name,
 				fontSize = 18.sp,
-				fontWeight = FontWeight.Bold
+				fontWeight = FontWeight.SemiBold
 			)
 			Text(
-				text = it.meta.shortName,
+				text = it.meta.shortName.uppercase(),
 				fontSize = 18.sp,
 				color = Color.Gray
 			)
 		}
-		Column {
+		Column(
+			horizontalAlignment = Alignment.End
+		) {
 			Text(
-				text = "${it.pricing.priceType.symbol} ${"%.2f".format(it.pricing.price)}",
+				text = "${it.pricing.priceType.symbol} ${it.pricing.price.asPrice()}",
 				fontSize = 18.sp,
 				fontWeight = FontWeight.ExtraBold
 			)
 			it.pricing.changePercentage.let {
 				Text(
-					text = "${if (it >= 0) "+" else "-"} $it",
+					text = "${if (it >= 0) "+" else ""}${it.asChangePercentage()}%",
 					fontSize = 18.sp,
 					color = if (it >= 0) Color.Green else Color.Red
 				)
@@ -175,20 +162,29 @@ private fun CurrencyBlock(
 }
 
 @Composable
-private fun PriceTypesList(
+fun PriceTypesList(
 	state: ListStore.State,
 	component: ListComponent
 ) {
 	Row {
-		PriceType.entries.forEach {
+		PriceType.entries.forEachIndexed { index, it ->
+			if (index != 0) {
+				Spacer(modifier = Modifier.width(8.dp))
+			}
 			ElevatedFilterChip(
 				selected = it == state.priceType,
 				onClick = {
 					component.onSwitchPriceType(it)
 				},
 				label = {
-					Text(text = it.title)
-				}
+					Text(text = it.title.uppercase())
+				},
+				colors = FilterChipDefaults
+					.filterChipColors()
+					.copy(
+						selectedContainerColor = OrangeChipBackground,
+						selectedLabelColor = OrangeChipText
+					)
 			)
 		}
 	}
