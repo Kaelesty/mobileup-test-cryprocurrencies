@@ -6,6 +6,9 @@ import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.Currency
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,11 +17,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class DefaultInfoComponent @Inject constructor(
-	componentContext: ComponentContext,
-	currencyMeta: Currency.Meta,
+class DefaultInfoComponent @AssistedInject constructor(
+	@Assisted componentContext: ComponentContext,
+	@Assisted currencyMeta: Currency.Meta,
+	@Assisted private val onNavigateBack: () -> Unit,
 	private val storeFactory: InfoStoreFactory,
-	private val onNavigateBack: () -> Unit
 ): InfoComponent, ComponentContext by componentContext {
 
 	private val scope = CoroutineScope(Dispatchers.Main)
@@ -48,5 +51,15 @@ class DefaultInfoComponent @Inject constructor(
 
 	override fun reloadOnError() {
 		store.accept(InfoStore.Intent.ReloadOnError)
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(
+			@Assisted componentContext: ComponentContext,
+			@Assisted currencyMeta: Currency.Meta,
+			@Assisted onNavigateBack: () -> Unit,
+		): DefaultInfoComponent
 	}
 }

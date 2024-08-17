@@ -30,6 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.kaelesty.mobileup_test_cryprocurrencies.R
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.Currency
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.PriceType
@@ -125,6 +127,7 @@ private fun ListScreenDefault(
 	}
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun CurrencyBlock(
 	component: ListComponent,

@@ -27,7 +27,7 @@ interface ListStore : Store<Intent, State, Label> {
 
 		object Reload: Intent
 
-		class SelectCurrency(val currency: Currency): Intent
+		class SelectCurrency(val currencyMeta: Currency.Meta): Intent
     }
 
     sealed class State(
@@ -46,7 +46,7 @@ interface ListStore : Store<Intent, State, Label> {
 
     sealed interface Label {
 
-		class NavigateToInfoScreen(val currency: Currency): Label
+		class NavigateToInfoScreen(val currencyMeta: Currency.Meta): Label
     }
 }
 
@@ -99,7 +99,7 @@ class ListStoreFactory @Inject constructor(
 					reloadCurrenciesList(getState().priceType)
 				}
 				is Intent.SelectCurrency -> {
-					publish(Label.NavigateToInfoScreen(intent.currency))
+					publish(Label.NavigateToInfoScreen(intent.currencyMeta))
 				}
 				is Intent.SwitchPriceType -> {
 					dispatch(Msg.SetPriceType(intent.priceType))

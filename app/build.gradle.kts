@@ -3,6 +3,7 @@ plugins {
 	alias(libs.plugins.jetbrains.kotlin.android)
 	alias(libs.plugins.google.devtools.ksp)
 	alias(libs.plugins.compose.compiler)
+	alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -81,10 +82,10 @@ dependencies {
 	implementation(libs.mvikotlin.coroutines)
 
 	implementation(libs.decompose.core)
-	implementation(libs.decompose.jetpack)
 	implementation(libs.decompose.extensions)
 
-	implementation(libs.kotlinx.serialization)
 	implementation(libs.glide)
 	implementation(libs.glide.compose)
+
+	implementation(libs.kotlinx.serialization.json)
 }

@@ -8,7 +8,9 @@ import dagger.Component
 @Component(
 	modules = [
 		ApiModule::class,
-		RepositoriesModule::class
+		RepositoriesModule::class,
+		DecomposeModule::class,
+		MviModule::class,
 	]
 )
 interface ApplicationComponent {

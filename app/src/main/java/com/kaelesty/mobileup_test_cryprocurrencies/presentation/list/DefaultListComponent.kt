@@ -7,6 +7,9 @@ import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.Currency
 import com.kaelesty.mobileup_test_cryprocurrencies.domain.entities.PriceType
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,10 +18,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class DefaultListComponent @Inject constructor(
-	componentContext: ComponentContext,
+class DefaultListComponent @AssistedInject constructor(
+	@Assisted componentContext: ComponentContext,
+	@Assisted private val onNavigateToInfoScreen: (Currency.Meta) -> Unit,
 	private val storeFactory: ListStoreFactory,
-	private val onNavigateToInfoScreen: (Currency) -> Unit
 ): ListComponent, ComponentContext by componentContext {
 
 	private val scope = CoroutineScope(Dispatchers.Main)
@@ -31,7 +34,7 @@ class DefaultListComponent @Inject constructor(
 			labels.collect { label ->
 				when (label) {
 					is ListStore.Label.NavigateToInfoScreen -> {
-						onNavigateToInfoScreen(label.currency)
+						onNavigateToInfoScreen(label.currencyMeta)
 					}
 				}
 			}
@@ -58,7 +61,16 @@ class DefaultListComponent @Inject constructor(
 
 	override fun onCurrencyClick(currency: Currency) {
 		store.accept(
-			ListStore.Intent.SelectCurrency(currency)
+			ListStore.Intent.SelectCurrency(currency.meta)
 		)
+	}
+
+	@AssistedFactory
+	interface Factory {
+
+		fun create(
+			@Assisted componentContext: ComponentContext,
+			@Assisted onNavigateToInfoScreen: (Currency.Meta) -> Unit,
+		): DefaultListComponent
 	}
 }
